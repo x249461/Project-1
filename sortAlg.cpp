@@ -49,49 +49,50 @@ void SortowaniePrzezScalanie(Typ *tab, int lewy, int prawy)
 *                                  *
 * QUICK SORT -- SORTOWANIE SZYBKIE *
 *                                  *
-************************************/
-// Dzielę tablicę na tablice jednoelementowe
-template<typename Typ>
-Typ podzial(Typ *tab, int lewy, int prawy)
- {
-	int pivot = tab[(lewy + prawy) / 2];
-	int l, p, tmp;
-	l = lewy;
-	p = prawy;
-	while (true)
-	{
-		while (tab[l] < pivot)
-			l++;
-		while (tab[p] > pivot) 
-			p--;
-		if (l < p)
-		{
-			tmp = tab[l];
-			tab[l] = tab[p];
-			tab[p] = tmp;
-			l++;
-			p--;
-		}
-		else 
-			return p;
-	}
-}
-
-// Wykonuję sortowanie szybkie 
-template<typename Typ>
-void quicksort(Typ *tab, int l, int n) 
+************************************/   
+// funkcja zamiany elemnetów tablicy
+template <class Typ>
+void exchange (Typ *tab, long i, long j)
 {
-    int srodek;
-	if (l < n)
-	{
-		srodek = podzial(tab, l, n); // dzielę tablice na dwie części
-		quicksort(tab, l, srodek-1); // rekurencyjnie wykonuję algorytm sortowania dla 1. częsci tablicy
-		quicksort(tab, srodek + 1, n); // rekurencyjnie wykonuję algorytm sortowania dla 2. częsi tablicy
-	}
-
+  Typ temp;
+  temp=tab[i];
+  tab[i]=tab[j];
+  tab[j]=temp;
 }
 
+// implemetacja algorytmu quicksort
+template <class Typ>
+void quicksort(Typ *tab, int lewy, int prawy)
+{
+	if(prawy <= lewy) return;
+	
+	int i = lewy - 1, j = prawy + 1, 
+	pivot = tab[(lewy+prawy)/2]; //wybieramy punkt odniesienia
+	
+	while(1)
+	{
+		//szukam elementu wiekszego lub rownego piwot stojacego
+		//po prawej stronie wartosci pivot
+		while(pivot>tab[++i]);
+		
+		//szukam elementu mniejszego lub rownego pivot stojacego
+		//po lewej stronie wartosci pivot
+		while(pivot<tab[--j]);
+		
+		//jesli liczniki sie nie minely to zamień elementy ze soba
+		//stojace po niewlasciwej stronie elementu pivot
+		if( i <= j)
+			//funkcja swap zamienia wartosciami tab[i] z tab[j]
+			swap(tab[i],tab[j]);
+		else
+			break;
+	}
 
+	if(j > lewy)
+	quicksort(tab, lewy, j);
+	if(i < prawy)
+	quicksort(tab, i, prawy);
+}
 /************
 *           *
 * HEAP SORT *
@@ -159,14 +160,7 @@ void insertionSort(Typ *tab, long N)
 }
 
 
-template <class Typ>
-void exchange (Typ *tab, long i, long j)
-{
-  Typ temp;
-  temp=tab[i];
-  tab[i]=tab[j];
-  tab[j]=temp;
-}
+
 
  
 template <class Typ>
@@ -238,7 +232,7 @@ int main(){
 	 tabPomoc=new int[rozmtablicy];
 	for (int k=0; k<rozmtablicy; k++)
     {
-	  tablicatablic[nrtablicy][k]=rand()-rand();
+	  tablicatablic[nrtablicy][k]=rand()%10000;
 	}
 	quicksort<int>(tablicatablic[nrtablicy], 0, dokadposortowac);
 	if(stopnieposortowania[j]==1)
@@ -262,10 +256,10 @@ int main(){
 	  
 	  for(int nrtablicy=0; nrtablicy<100; nrtablicy++)
       {
-	    //SortowaniePrzezScalanie<int>(tablicatablic[nrtablicy],0,rozmtablicy-1);
+	    SortowaniePrzezScalanie<int>(tablicatablic[nrtablicy],0,rozmtablicy-1);
        // HeapSort<int>(tablicatablic[nrtablicy], rozmtablicy);
-      //  introSort<int>(tablicatablic[nrtablicy], 0, rozmtablicy-1);
-        	//quicksort<int>(tablicatablic[nrtablicy], 0, rozmtablicy-1);
+       //introSort<int>(tablicatablic[nrtablicy], 0, rozmtablicy-1);
+        quicksort<int>(tablicatablic[nrtablicy], 0, rozmtablicy-1);
 		Hybrid_Introspective_Sort<int>(tablicatablic[nrtablicy], rozmtablicy);
       }
 	
